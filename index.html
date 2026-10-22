@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordBloom | Vocabulary Builder</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+body{font-family:'DM Sans',sans-serif;background:#f8faf7;color:#26352d}
+h1,h2,.serif{font-family:'Playfair Display',serif}
+button,input{transition:all .2s}
+.word-card{transition:transform .2s,box-shadow .2s}
+.word-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px #203c2510}
+.active-tab{background:#244c38!important;color:white!important}
+.option-btn{border:1px solid #dce5dc}
+.option-btn:hover{border-color:#397451;background:#f0f7f0}
+.option-btn.correct{background:#e1f5e5;border-color:#399354;color:#205e32}
+.option-btn.wrong{background:#fff0ee;border-color:#dc6c60;color:#a53c31}
+</style>
+</head>
+<body>
+<header class="bg-white border-b border-gray-100 sticky top-0 z-20">
+  <nav class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2" onclick="showPage('home')">
+      <div class="w-10 h-10 rounded-xl bg-green-900 text-white flex items-center justify-center text-xl">W</div>
+      <div>
+        <div class="font-bold text-xl tracking-tight">WordBloom<span class="text-green-700">.</span></div>
+        <div class="text-xs text-gray-500">Grow your vocabulary</div>
+      </div>
+    </a>
+    <div class="hidden md:flex items-center gap-7 text-sm font-medium">
+      <button onclick="showPage('home')" class="hover:text-green-800">Home</button>
+      <button onclick="showPage('learn')" class="hover:text-green-800">Learn words</button>
+      <button onclick="showPage('quiz')" class="hover:text-green-800">Daily quiz</button>
+      <button onclick="showPage('saved')" class="hover:text-green-800">Saved words <span id="savedNav" class="text-green-700">(0)</span></button>
+    </div>
+    <button onclick="showPage('quiz')" class="bg-green-900 text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:bg-green-800">Practice now ↗</button>
+  </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
+<section id="homePage">
+  <div class="grid lg:grid-cols-2 gap-10 items-center mb-12">
+    <div>
+      <div class="inline-flex items-center gap-2 rounded-full bg-green-100 text-green-900 px-4 py-2 text-sm font-semibold mb-6">
+        <span>✦</span> A little learning every day
+      </div>
+      <h1 class="text-5xl md:text-6xl leading-tight font-bold mb-5">Find the right<br>words. <span class="text-green-800 italic">Every day.</span></h1>
+      <p class="text-gray-600 text-lg leading-8 max-w-xl mb-8">Build a stronger vocabulary, discover beautiful words, and express yourself with confidence — one word at a time.</p>
+      <div class="flex flex-wrap gap-3">
+        <button onclick="showPage('learn')" class="bg-green-900 text-white rounded-xl px-6 py-3.5 font-semibold hover:bg-green-800">Explore vocabulary →</button>
+        <button onclick="showPage('quiz')" class="border border-gray-300 bg-white rounded-xl px-6 py-3.5 font-semibold hover:border-green-800">Take a quick quiz</button>
+      </div>
+      <div class="flex gap-8 mt-9">
+        <div><div class="text-2xl font-bold" id="wordCount">12</div><div class="text-sm text-gray-500">Words to explore</div></div>
+        <div><div class="text-2xl font-bold" id="savedCount">0</div><div class="text-sm text-gray-500">Words saved</div></div>
+        <div><div class="text-2xl font-bold" id="bestScore">0%</div><div class="text-sm text-gray-500">Best quiz score</div></div>
+      </div>
+    </div>
+    <div class="bg-[#e8eee4] rounded-3xl p-7 md:p-10 relative overflow-hidden">
+      <div class="absolute -right-8 -top-8 w-40 h-40 rounded-full border-[25px] border-white/40"></div>
+      <div class="relative bg-white rounded-2xl p-7 md:p-9 shadow-sm">
+        <div class="flex justify-between items-center mb-7">
+          <span class="text-xs font-bold tracking-widest text-green-800 uppercase">Today's featured word</span>
+          <span class="bg-green-100 text-green-900 text-xs rounded-full px-3 py-1.5">01 / 12</span>
+        </div>
+        <div class="text-5xl md:text-6xl serif font-bold mb-3">Serendipity</div>
+        <div class="text-gray-500 italic mb-5">noun · seh-ren-DIP-ih-tee</div>
+        <p class="text-gray-700 leading-7 mb-5">The unexpected discovery of something wonderful or valuable.</p>
+        <div class="bg-[#f5f7f2] border-l-4 border-green-800 p-4 rounded-r-xl text-sm leading-6">
+          <span class="font-bold">Example:</span> Finding her favourite book in a little second-hand shop was pure serendipity.
+        </div>
+        <button onclick="saveWord(1)" class="mt-6 text-green-900 font-semibold text-sm hover:underline">♡ Save this word</button>
+      </div>
+      <div class="relative mt-5 flex items-center justify-between text-sm text-green-950">
+        <span>✦ Learn something new</span><span>Little steps, big growth.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-end justify-between mb-6 gap-4">
+    <div><p class="text-green-800 text-sm font-bold uppercase tracking-widest mb-2">Your learning journey</p><h2 class="text-3xl font-bold">Your daily progress</h2></div>
+    <button onclick="showPage('saved')" class="text-green-800 font-semibold text-sm">My saved words →</button>
+  </div>
+  <div class="grid sm:grid-cols-3 gap-4 mb-12">
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+      <div class="text-2xl mb-4">📖</div><div class="text-gray-500 text-sm mb-1">Words explored</div><div class="text-3xl font-bold" id="exploredStat">0</div><div class="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden"><div id="exploredBar" class="bg-green-800 h-full rounded-full" style="width:0%"></div></div>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+      <div class="text-2xl mb-4">🔖</div><div class="text-gray-500 text-sm mb-1">Words saved</div><div class="text-3xl font-bold" id="savedStat">0</div><p class="text-sm text-gray-500 mt-3">Build your personal dictionary.</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+      <div class="text-2xl mb-4">✦</div><div class="text-gray-500 text-sm mb-1">Quiz accuracy</div><div class="text-3xl font-bold" id="accuracyStat">0%</div><p class="text-sm text-gray-500 mt-3">Keep practising to improve.</p>
+    </div>
+  </div>
+
+  <div class="flex items-end justify-between gap-4 mb-6">
+    <div><p class="text-green-800 text-sm font-bold uppercase tracking-widest mb-2">Handpicked for you</p><h2 class="text-3xl font-bold">Words worth knowing</h2></div>
+    <button onclick="showPage('learn')" class="text-green-800 font-semibold text-sm whitespace-nowrap">All words →</button>
+  </div>
+  <div id="featuredGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+  <div class="mt-12 bg-green-950 text-white rounded-3xl p-8 md:p-12 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+    <div><div class="text-green-300 text-sm uppercase tracking-widest font-bold mb-3">Ready for a challenge?</div><h2 class="text-3xl md:text-4xl font-bold mb-3">Put your words to the test.</h2><p class="text-green-100/80">Take a short quiz and see how much you remember.</p></div>
+    <button onclick="showPage('quiz')" class="bg-white text-green-950 rounded-xl px-6 py-4 font-bold whitespace-nowrap hover:bg-green-100">Start the quiz →</button>
+  </div>
+</section>
+
+<section id="learnPage" class="hidden">
+  <div class="mb-8"><p class="text-green-800 uppercase tracking-widest text-sm font-bold mb-2">Expand your vocabulary</p><h1 class="text-4xl md:text-5xl font-bold mb-4">Explore words</h1><p class="text-gray-600 max-w-2xl">Discover new words, learn their meanings, and save the ones you want to remember.</p></div>
+  <div class="flex flex-col md:flex-row gap-3 mb-7">
+    <div class="relative flex-1"><input id="searchInput" oninput="renderWords()" placeholder="Search words or meanings..." class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 outline-none focus:border-green-800"><span class="absolute right-4 top-3.5 text-gray-400">⌕</span></div>
+    <select id="levelFilter" onchange="renderWords()" class="bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none"><option value="All">All levels</option><option value="Beginner">Beginner</option><option value="Intermediate">Intermediate</option><option value="Advanced">Advanced</option></select>
+    <select id="categoryFilter" onchange="renderWords()" class="bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none"><option value="All">All categories</option><option value="Personality">Personality</option><option value="Emotions">Emotions</option><option value="Communication">Communication</option><option value="Knowledge">Knowledge</option><option value="Everyday">Everyday</option></select>
+  </div>
+  <div class="flex gap-2 flex-wrap mb-7">
+    <button onclick="setWordTab('All')" id="tabAll" class="active-tab rounded-full px-5 py-2 text-sm font-semibold">All words</button>
+    <button onclick="setWordTab('Saved')" id="tabSaved" class="bg-white border border-gray-200 rounded-full px-5 py-2 text-sm font-semibold">Saved words</button>
+  </div>
+  <p id="resultCount" class="text-sm text-gray-500 mb-4"></p>
+  <div id="wordGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  <div id="emptyWords" class="hidden text-center py-16 text-gray-500">No words found. Try another search.</div>
+</section>
+
+<section id="quizPage" class="hidden max-w-3xl mx-auto">
+  <div class="text-center mb-8"><p class="text-green-800 text-sm uppercase tracking-widest font-bold mb-3">Test your knowledge</p><h1 class="text-4xl md:text-5xl font-bold mb-4">Daily vocabulary quiz</h1><p class="text-gray-600">Choose the correct meaning for each word.</p></div>
+  <div id="quizContainer" class="bg-white border border-gray-100 rounded-3xl shadow-sm p-6 md:p-10">
+    <div class="flex justify-between text-sm text-gray-500 mb-3"><span id="quizProgressText">Question 1 of 10</span><span id="quizScoreText">Score: 0</span></div>
+    <div class="h-2 rounded-full bg-gray-100 overflow-hidden mb-8"><div id="quizBar" class="h-full bg-green-800 rounded-full" style="width:0%"></div></div>
+    <div id="quizQuestion"></div>
+    <div id="quizOptions" class="grid gap-3 mt-6"></div>
+    <div id="quizFeedback" class="hidden mt-5 p-4 rounded-xl text-sm leading-6"></div>
+    <button id="nextQuestion" onclick="nextQuiz()" class="hidden w-full mt-6 bg-green-900 text-white rounded-xl py-3.5 font-semibold hover:bg-green-800">Next question →</button>
+  </div>
+  <div class="text-center mt-6"><button onclick="startQuiz()" class="text-green-800 font-semibold hover:underline">Restart quiz</button></div>
+</section>
+
+<section id="savedPage" class="hidden">
+  <div class="mb-8"><p class="text-green-800 text-sm uppercase tracking-widest font-bold mb-2">Your personal dictionary</p><h1 class="text-4xl md:text-5xl font-bold mb-4">Saved words</h1><p class="text-gray-600">All the words you've bookmarked in one place.</p></div>
+  <div id="savedGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+  <div id="emptySaved" class="hidden bg-white rounded-2xl p-12 text-center border border-gray-100"><div class="text-4xl mb-4">🔖</div><h2 class="text-2xl font-bold mb-3">Your dictionary is waiting</h2><p class="text-gray-500 mb-6">Save a few words while exploring to see them here.</p><button onclick="showPage('learn')" class="bg-green-900 text-white rounded-xl px-6 py-3 font-semibold">Explore words →</button></div>
+</section>
+</main>
+
+<footer class="bg-white border-t border-gray-100 mt-16">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 py-8 flex flex-col sm:flex-row justify-between gap-4 text-sm text-gray-500">
+    <div><span class="font-bold text-green-950 text-base">WordBloom.</span><p class="mt-1">Grow your words. Express your world.</p></div>
+    <div class="sm:text-right"><p>Made for curious minds.</p><p class="mt-1">© <span id="year"></span> WordBloom · Vocabulary learning project</p></div>
+  </div>
+</footer>
+
+<script>
+const words=[
+{id:1,word:"Serendipity",pron:"seh-ren-DIP-ih-tee",type:"noun",level:"Advanced",category:"Emotions",meaning:"The unexpected discovery of something wonderful or valuable.",example:"Finding that little bookshop was pure serendipity.",syn:"Fortunate discovery",tag:"Beautiful word"},
+{id:2,word:"Resilient",pron:"ri-ZIL-yuhnt",type:"adjective",level:"Intermediate",category:"Personality",meaning:"Able to recover quickly from difficulties or setbacks.",example:"She remained resilient even after several failures.",syn:"Strong, adaptable",tag:"Personal growth"},
+{id:3,word:"Eloquent",pron:"EL-uh-kwuhnt",type:"adjective",level:"Advanced",category:"Communication",meaning:"Fluent, persuasive, and expressive in speaking or writing.",example:"His eloquent speech moved the entire audience.",syn:"Articulate, expressive",tag:"Communication"},
+{id:4,word:"Curious",pron:"KYOOR-ee-us",type:"adjective",level:"Beginner",category:"Personality",meaning:"Eager to know, learn, or understand something.",example:"A curious mind asks thoughtful questions.",syn:"Inquisitive, interested",tag:"Everyday word"},
+{id:5,word:"Gratitude",pron:"GRAT-ih-tood",type:"noun",level:"Intermediate",category:"Emotions",meaning:"The quality of being thankful and appreciating kindness.",example:"She expressed gratitude for their support.",syn:"Thankfulness, appreciation",tag:"Positive mindset"},
+{id:6,word:"Meticulous",pron:"muh-TIK-yuh-lus",type:"adjective",level:"Advanced",category:"Personality",meaning:"Showing great attention to detail and accuracy.",example:"He kept meticulous notes during the project.",syn:"Careful, precise",tag:"Professional word"},
+{id:7,word:"Concise",pron:"kuhn-SICE",type:"adjective",level:"Intermediate",category:"Communication",meaning:"Giving information clearly in a few words.",example:"Write a concise email with the main points.",syn:"Brief, to the point",tag:"Writing skill"},
+{id:8,word:"Pragmatic",pron:"prag-MAT-ik",type:"adjective",level:"Advanced",category:"Knowledge",meaning:"Dealing with problems in a practical and realistic way.",example:"We need a pragmatic solution to the problem.",syn:"Practical, sensible",tag:"Critical thinking"},
+{id:9,word:"Vivid",pron:"VIV-id",type:"adjective",level:"Intermediate",category:"Communication",meaning:"Producing strong, clear images or impressions in the mind.",example:"She gave a vivid description of the trip.",syn:"Bright, striking",tag:"Descriptive word"},
+{id:10,word:"Humble",pron:"HUM-buhl",type:"adjective",level:"Beginner",category:"Personality",meaning:"Having a modest view of your own importance.",example:"Despite his success, he remained humble.",syn:"Modest, unassuming",tag:"Character"},
+{id:11,word:"Ephemeral",pron:"ih-FEM-er-uhl",type:"adjective",level:"Advanced",category:"Knowledge",meaning:"Lasting for only a short time.",example:"The beauty of a sunset is ephemeral.",syn:"Brief, short-lived",tag:"Literary word"},
+{id:12,word:"Adapt",pron:"uh-DAPT",type:"verb",level:"Beginner",category:"Everyday",meaning:"To change your behaviour or approach to suit new conditions.",example:"You must adapt to new learning methods.",syn:"Adjust, modify",tag:"Useful verb"}
+];
+
+const stored=(key,fallback)=>{try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v)}catch(e){return fallback}};
+let saved=stored("wb_saved",[]);
+let explored=stored("wb_explored",[]);
+let totalAnswered=stored("wb_answered",0);
+let totalCorrect=stored("wb_correct",0);
+let best=stored("wb_best",0);
+let wordTab="All";
+let quizList=[],quizIndex=0,quizScore=0,answered=false;
+
+function persist(){
+try{
+localStorage.setItem("wb_saved",JSON.stringify(saved));
+localStorage.setItem("wb_explored",JSON.stringify(explored));
+localStorage.setItem("wb_answered",JSON.stringify(totalAnswered));
+localStorage.setItem("wb_correct",JSON.stringify(totalCorrect));
+localStorage.setItem("wb_best",JSON.stringify(best));
+}catch(e){}
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function markExplored(id){if(!explored.includes(id)){explored.push(id);persist();updateStats()}}
+function saveWord(id){
+if(saved.includes(id)){saved=saved.filter(x=>x!==id)}else{saved.push(id)}
+persist();updateStats();renderWords();renderSaved();renderFeatured();
+}
+function updateStats(){
+document.getElementById("savedCount").textContent=saved.length;
+document.getElementById("savedStat").textContent=saved.length;
+document.getElementById("savedNav").textContent="("+saved.length+")";
+document.getElementById("exploredStat").textContent=explored.length;
+document.getElementById("exploredBar").style.width=(explored.length/words.length*100)+"%";
+document.getElementById("accuracyStat").textContent=totalAnswered?Math.round(totalCorrect/totalAnswered*100)+"%":"0%";
+document.getElementById("bestScore").textContent=best+"%";
+}
+function card(w){
+const isSaved=saved.includes(w.id);
+return `<article class="word-card bg-white border border-gray-100 rounded-2xl p-6 flex flex-col">
+<div class="flex items-start justify-between gap-2 mb-5"><span class="text-xs font-bold uppercase tracking-wider text-green-800 bg-green-50 rounded-full px-3 py-1.5">${esc(w.level)}</span><button onclick="saveWord(${w.id})" aria-label="Save ${esc(w.word)}" class="text-2xl ${isSaved?'text-green-800':'text-gray-300 hover:text-green-800'}">${isSaved?'♥':'♡'}</button></div>
+<div class="text-3xl serif font-bold mb-2">${esc(w.word)}</div><div class="text-sm text-gray-500 italic mb-4">${esc(w.type)} · ${esc(w.pron)}</div>
+<p class="text-gray-700 leading-6 mb-4">${esc(w.meaning)}</p>
+<div class="bg-[#f6f8f4] rounded-xl p-4 text-sm leading-6 mb-4"><span class="font-bold">Example: </span><span class="italic">${esc(w.example)}</span></div>
+<div class="text-xs text-gray-500 mb-5">Similar: ${esc(w.syn)}</div>
+<div class="mt-auto flex items-center justify-between gap-2"><span class="text-xs text-gray-500">${esc(w.category)}</span><button onclick="flipCard(${w.id})" class="text-sm font-semibold text-green-800 hover:underline">Quick review ↗</button></div>
+<div id="review-${w.id}" class="hidden mt-4 border-t border-gray-100 pt-4 text-sm"><p class="font-semibold mb-2">Can you remember it?</p><p class="text-gray-600">${esc(w.meaning)}</p><button onclick="markExplored(${w.id});this.textContent='Reviewed ✓';this.disabled=true" class="mt-3 bg-green-900 text-white rounded-lg px-4 py-2">Mark as reviewed</button></div>
+</article>`;
+}
+function flipCard(id){markExplored(id);const el=document.getElementById("review-"+id);if(el)el.classList.toggle("hidden")}
+function renderFeatured(){
+document.getElementById("featuredGrid").innerHTML=words.slice(1,4).map(card).join("");
+}
+function renderWords(){
+const q=(document.getElementById("searchInput")?.value||"").toLowerCase().trim();
+const level=document.getElementById("levelFilter")?.value||"All";
+const cat=document.getElementById("categoryFilter")?.value||"All";
+const list=words.filter(w=>(wordTab==="All"||saved.includes(w.id))&&(level==="All"||w.level===level)&&(cat==="All"||w.category===cat)&&(!q||w.word.toLowerCase().includes(q)||w.meaning.toLowerCase().includes(q)||w.category.toLowerCase().includes(q)));
+document.getElementById("wordGrid").innerHTML=list.map(card).join("");
+document.getElementById("resultCount").textContent=list.length+" word"+(list.length===1?"":"s")+" found";
+document.getElementById("emptyWords").classList.toggle("hidden",list.length!==0);
+document.getElementById("tabAll").className=wordTab==="All"?"active-tab rounded-full px-5 py-2 text-sm font-semibold":"bg-white border border-gray-200 rounded-full px-5 py-2 text-sm font-semibold";
+document.getElementById("tabSaved").className=wordTab==="Saved"?"active-tab rounded-full px-5 py-2 text-sm font-semibold":"bg-white border border-gray-200 rounded-full px-5 py-2 text-sm font-semibold";
+}
+function setWordTab(tab){wordTab=tab;renderWords()}
+function renderSaved(){
+const list=words.filter(w=>saved.includes(w.id));
+document.getElementById("savedGrid").innerHTML=list.map(card).join("");
+document.getElementById("emptySaved").classList.toggle("hidden",list.length!==0);
+}
+
+function showPage(page){
+["home","learn","quiz","saved"].forEach(p=>document.getElementById(p+"Page").classList.toggle("hidden",p!==page));
+if(page==="learn"){wordTab="All";renderWords()}
+if(page==="saved")renderSaved();
+if(page==="home"){renderFeatured();updateStats()}
+window.scrollTo({top:0,behavior:"smooth"});
+}
+function startQuiz(){
+quizList=[...words].sort(()=>Math.random()-.5).slice(0,10);
+quizIndex=0;quizScore=0;answered=false;
+document.getElementById("quizContainer").classList.remove("hidden");
+document.getElementById("quizScoreText").textContent="Score: 0";
+renderQuizQuestion();
+}
+function renderQuizQuestion(){
+answered=false;
+const w=quizList[quizIndex];
+document.getElementById("quizProgressText").textContent=`Question ${quizIndex+1} of ${quizList.length}`;
+document.getElementById("quizBar").style.width=(quizIndex/quizList.length*100)+"%";
+document.getElementById("quizQuestion").innerHTML=`<div class="text-sm text-green-800 font-bold uppercase tracking-widest mb-4">What does this word mean?</div><h2 class="text-4xl md:text-5xl font-bold mb-3">${esc(w.word)}</h2><p class="text-gray-500 italic">${esc(w.type)} · ${esc(w.pron)}</p>`;
+const wrong=words.filter(x=>x.id!==w.id).sort(()=>Math.random()-.5).slice(0,3);
+const options=[w,...wrong].sort(()=>Math.random()-.5);
+document.getElementById("quizOptions").innerHTML=options.map(o=>`<button class="option-btn rounded-xl p-4 text-left leading-6" data-id="${o.id}" onclick="chooseAnswer(${o.id})">${esc(o.meaning)}</button>`).join("");
+document.getElementById("quizFeedback").className="hidden mt-5 p-4 rounded-xl text-sm leading-6";
+document.getElementById("nextQuestion").classList.add("hidden");
+document.getElementById("nextQuestion").textContent=quizIndex===quizList.length-1?"See results →":"Next question →";
+}
+function chooseAnswer(id){
+if(answered)return;
+answered=true;
+const w=quizList[quizIndex];
+const correct=id===w.id;
+if(correct)quizScore++;
+totalAnswered++;if(correct)totalCorrect++;
+markExplored(w.id);persist();
+document.querySelectorAll("#quizOptions button").forEach(b=>{
+b.disabled=true;
+const bid=Number(b.dataset.id);
+if(bid===w.id)b.classList.add("correct");
+else if(bid===id)b.classList.add("wrong");
+});
+const feedback=document.getElementById("quizFeedback");
+feedback.className="mt-5 p-4 rounded-xl text-sm leading-6 "+(correct?"bg-green-50 text-green-900":"bg-red-50 text-red-900");
+feedback.innerHTML=`<strong>${correct?"Correct! Well done.":"Not quite — keep learning!"}</strong><br>${esc(w.word)} means: ${esc(w.meaning)}`;
+document.getElementById("quizScoreText").textContent="Score: "+quizScore;
+document.getElementById("quizBar").style.width=((quizIndex+1)/quizList.length*100)+"%";
+document.getElementById("nextQuestion").classList.remove("hidden");
+updateStats();
+}
+function nextQuiz(){
+if(!answered)return;
+if(quizIndex<quizList.length-1){quizIndex++;renderQuizQuestion();return}
+const score=Math.round(quizScore/quizList.length*100);
+best=Math.max(best,score);persist();updateStats();
+document.getElementById("quizContainer").innerHTML=`<div class="text-center py-8"><div class="text-5xl mb-5">${score>=70?"✦":"📚"}</div><p class="text-green-800 font-bold uppercase tracking-widest text-sm mb-3">Quiz complete</p><h2 class="text-4xl font-bold mb-4">${score>=70?"Beautiful work!":"Keep growing!"}</h2><div class="text-6xl font-bold text-green-900 mb-3">${score}%</div><p class="text-gray-600 mb-8">You answered ${quizScore} out of ${quizList.length} questions correctly.</p><button onclick="startQuiz()" class="bg-green-900 text-white rounded-xl px-6 py-3 font-semibold">Try again ↻</button><button onclick="showPage('learn')" class="block mx-auto mt-5 text-green-800 font-semibold">Explore more words →</button></div>`;
+}
+document.getElementById("year").textContent=new Date().getFullYear();
+document.getElementById("wordCount").textContent=words.length;
+updateStats();renderFeatured();renderWords();renderSaved();startQuiz();
+</script>
+</body>
+</html>
